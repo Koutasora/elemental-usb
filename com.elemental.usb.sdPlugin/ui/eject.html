@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<style>
+		body { margin: 0; padding: 8px 12px; background: #2d2d2d; color: #d8d8d8; font: 13px "Segoe UI", Arial, sans-serif; }
+		.row { display: flex; align-items: center; margin: 6px 0; }
+		.row label { width: 34%; color: #969696; padding-right: 8px; }
+		select { flex: 1; background: #3d3d3d; color: #d8d8d8; border: 1px solid #555; border-radius: 3px; padding: 4px; }
+		.note { color: #969696; font-size: 12px; line-height: 1.45; margin: 12px 0 4px; }
+	</style>
+</head>
+<body>
+	<div class="row"><label data-t="language"></label>
+		<select id="lang"><option value="auto" data-t="auto"></option><option value="en">English</option><option value="pl">Polski</option></select>
+	</div>
+	<div class="row"><label data-t="hold"></label>
+		<select id="holdMs"><option value="500">0,5 s</option><option value="800">0,8 s</option><option value="1200">1,2 s</option></select>
+	</div>
+	<p class="note" data-t="note"></p>
+	<script>
+		var T = {
+			en: { language: "Language", auto: "Automatic", hold: "Hold to eject", note: "Press the key to switch between USB devices, hold it to safely remove the one shown. Only devices that Windows lists under “Safely Remove Hardware” appear – mice, keyboards, audio or the Stream Deck never do." },
+			pl: { language: "Język", auto: "Automatyczny", hold: "Przytrzymaj, by wysunąć", note: "Naciśnij klawisz, by przełączać urządzenia USB, przytrzymaj, by bezpiecznie usunąć pokazane. Pojawiają się tylko urządzenia z listy „Bezpieczne usuwanie sprzętu” w Windows – myszki, klawiatury, audio ani Stream Deck nigdy." },
+		};
+		var ws, uuid, settings = {}, sdLang = "en", langChoice = "auto";
+
+		function translate() {
+			var l = langChoice === "auto" ? (sdLang.indexOf("pl") === 0 ? "pl" : "en") : langChoice;
+			document.querySelectorAll("[data-t]").forEach(function (el) { el.textContent = T[l][el.getAttribute("data-t")]; });
+		}
+		function send(o) { if (ws && ws.readyState === 1) ws.send(JSON.stringify(o)); }
+
+		document.getElementById("lang").addEventListener("change", function (e) {
+			langChoice = e.target.value;
+			translate();
+			send({ event: "setGlobalSettings", context: uuid, payload: { lang: langChoice } });
+		});
+		document.getElementById("holdMs").addEventListener("change", function (e) {
+			settings.holdMs = Number(e.target.value);
+			send({ event: "setSettings", context: uuid, payload: settings });
+		});
+		translate();
+
+		// wywoływane przez Stream Deck
+		function connectElgatoStreamDeckSocket(port, piUuid, registerEvent, info, actionInfo) {
+			uuid = piUuid;
+			try { sdLang = (JSON.parse(info).application.language || "en").toLowerCase(); } catch (e) {}
+			try { settings = JSON.parse(actionInfo).payload.settings || {}; } catch (e) {}
+			document.getElementById("holdMs").value = String(settings.holdMs || 800);
+			translate();
+			ws = new WebSocket("ws://127.0.0.1:" + port);
+			ws.onopen = function () {
+				send({ event: registerEvent, uuid: uuid });
+				send({ event: "getGlobalSettings", context: uuid });
+			};
+			ws.onmessage = function (m) {
+				var j = JSON.parse(m.data);
+				if (j.event === "didReceiveGlobalSettings") {
+					langChoice = (j.payload.settings && j.payload.settings.lang) || "auto";
+					document.getElementById("lang").value = langChoice;
+					translate();
+				}
+			};
+		}
+	</script>
+</body>
+</html>

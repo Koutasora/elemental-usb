@@ -1,0 +1,4 @@
+node_modules/
+dist/
+com.elemental.usb.sdPlugin/logs/
+com.elemental.usb.sdPlugin/bin/plugin.js

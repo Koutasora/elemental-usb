@@ -1,0 +1,43 @@
+{
+  "$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
+  "SDKVersion": 3,
+  "UUID": "com.elemental.usb",
+  "Name": "Elemental USB",
+  "Version": "1.0.0.0",
+  "Author": "Koutasora",
+  "Description": "Shows USB drives, pendrives, card readers and security keys on one key. Press to switch, hold to safely remove.",
+  "Icon": "imgs/plugin-icon",
+  "Category": "Elemental USB",
+  "CategoryIcon": "imgs/category-icon",
+  "CodePath": "bin/plugin.js",
+  "Nodejs": {
+    "Version": "20"
+  },
+  "OS": [
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "Software": {
+    "MinimumVersion": "7.1"
+  },
+  "Actions": [
+    {
+      "UUID": "com.elemental.usb.eject",
+      "Name": "Safely Remove USB",
+      "Tooltip": "Press to switch between USB devices, hold to safely remove the one shown.",
+      "Icon": "imgs/action-icon",
+      "PropertyInspectorPath": "ui/eject.html",
+      "Controllers": [
+        "Keypad"
+      ],
+      "States": [
+        {
+          "Image": "imgs/key-default",
+          "ShowTitle": false
+        }
+      ]
+    }
+  ]
+}

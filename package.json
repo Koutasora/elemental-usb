@@ -1,0 +1,23 @@
+{
+  "name": "elemental-usb",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "esbuild src/plugin.ts --bundle --platform=node --format=esm --target=node20 --banner:js=\"import{createRequire as __cr}from'module';const require=__cr(import.meta.url);\" --outfile=com.elemental.usb.sdPlugin/bin/plugin.js",
+    "typecheck": "tsc",
+    "icons": "node scripts/gen-icons.mjs",
+    "link": "streamdeck link com.elemental.usb.sdPlugin",
+    "restart": "powershell -NoProfile -File restart.ps1",
+    "deploy": "npm run build && npm run restart"
+  },
+  "dependencies": {
+    "@elgato/streamdeck": "^3.0.1"
+  },
+  "devDependencies": {
+    "@elgato/cli": "^1.10.1",
+    "@types/node": "^26.6.4",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2"
+  }
+}
