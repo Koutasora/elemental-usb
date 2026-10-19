@@ -51,8 +51,9 @@ type EjectResult = { ok: boolean; veto?: number; by?: string };
 function ensureHelper(): void {
 	if (helper || Date.now() - helperStartedAt < 5000) return;
 	helperStartedAt = Date.now();
-	const script = join(dirname(fileURLToPath(import.meta.url)), "usb-helper.ps1");
-	const proc = spawn("powershell", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script, "-ParentPid", String(process.pid)], {
+	const dir = dirname(fileURLToPath(import.meta.url));
+	// macOS: pomocnik w Node (diskutil, lsof) uruchamiany tym samym Node co plugin; ten sam protokół co usb-helper.ps1
+	const proc = process.platform === "darwin" ? spawn(process.execPath, [join(dir, "usb-helper-mac.mjs")], { stdio: ["pipe", "pipe", "ignore"] }) : spawn("powershell", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", join(dir, "usb-helper.ps1"), "-ParentPid", String(process.pid)], {
 		windowsHide: true,
 		stdio: ["pipe", "pipe", "ignore"],
 	});
@@ -138,6 +139,11 @@ function deviceView(dev: Device, index: number, hold: number): KeyView {
 	if (dev.letters) {
 		const title = dev.label ? `${dev.letters.split(" ")[0]} ${dev.label}` : dev.letters;
 		return { ...base, title, line2: dev.name, line3: size || undefined };
+	}
+	// macOS nie ma liter dysków: nazwa woluminu na górze, model pod spodem
+	if (dev.label) {
+		const [vol, volRest] = splitName(dev.label);
+		return { ...base, title: vol, line2: volRest ?? dev.name, line3: size || undefined };
 	}
 	const [title, rest] = splitName(dev.name);
 	if (dev.kind === "key") return { ...base, title, line2: rest, line3: tr().unplug };

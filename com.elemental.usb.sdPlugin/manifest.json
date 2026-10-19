@@ -3,7 +3,7 @@
   "SDKVersion": 3,
   "UUID": "com.elemental.usb",
   "Name": "Elemental USB",
-  "Version": "1.0.0.0",
+  "Version": "1.1.0.0",
   "Author": "Koutasora",
   "Description": "Shows USB drives, pendrives, card readers and security keys on one key. Press to switch, hold to safely remove.",
   "Icon": "imgs/plugin-icon",
@@ -17,6 +17,10 @@
     {
       "Platform": "windows",
       "MinimumVersion": "10"
+    },
+    {
+      "Platform": "mac",
+      "MinimumVersion": "12"
     }
   ],
   "Software": {

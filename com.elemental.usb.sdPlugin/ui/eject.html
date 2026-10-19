@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8" />
 	<style>
-		body { margin: 0; padding: 8px 12px; background: #2d2d2d; color: #d8d8d8; font: 13px "Segoe UI", Arial, sans-serif; }
+		body { margin: 0; padding: 8px 12px; background: #2d2d2d; color: #d8d8d8; font: 13px "Segoe UI", -apple-system, "Helvetica Neue", Arial, sans-serif; }
 		.row { display: flex; align-items: center; margin: 6px 0; }
 		.row label { width: 34%; color: #969696; padding-right: 8px; }
 		select { flex: 1; background: #3d3d3d; color: #d8d8d8; border: 1px solid #555; border-radius: 3px; padding: 4px; }
@@ -20,8 +20,8 @@
 	<p class="note" data-t="note"></p>
 	<script>
 		var T = {
-			en: { language: "Language", auto: "Automatic", hold: "Hold to eject", note: "Press the key to switch between USB devices, hold it to safely remove the one shown. Only devices that Windows lists under “Safely Remove Hardware” appear – mice, keyboards, audio or the Stream Deck never do." },
-			pl: { language: "Język", auto: "Automatyczny", hold: "Przytrzymaj, by wysunąć", note: "Naciśnij klawisz, by przełączać urządzenia USB, przytrzymaj, by bezpiecznie usunąć pokazane. Pojawiają się tylko urządzenia z listy „Bezpieczne usuwanie sprzętu” w Windows – myszki, klawiatury, audio ani Stream Deck nigdy." },
+			en: { language: "Language", auto: "Automatic", hold: "Hold to eject", note: "Press the key to switch between USB devices, hold it to safely remove the one shown. Only devices that Windows lists under “Safely Remove Hardware” (on a Mac: external USB drives and SD cards) appear – mice, keyboards, audio or the Stream Deck never do." },
+			pl: { language: "Język", auto: "Automatyczny", hold: "Przytrzymaj, by wysunąć", note: "Naciśnij klawisz, by przełączać urządzenia USB, przytrzymaj, by bezpiecznie usunąć pokazane. Pojawiają się tylko urządzenia z listy „Bezpieczne usuwanie sprzętu” w Windows (na Macu: zewnętrzne dyski USB i karty SD) – myszki, klawiatury, audio ani Stream Deck nigdy." },
 		};
 		var ws, uuid, settings = {}, sdLang = "en", langChoice = "auto";
 

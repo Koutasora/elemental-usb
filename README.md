@@ -1,6 +1,6 @@
 # Elemental USB – Stream Deck plugin
 
-One key for all your USB drives: it shows what's plugged in, a short press switches between devices, and holding the key **safely removes** the one shown, the same as *Safely Remove Hardware* in the Windows tray.
+One key for all your USB drives: it shows what's plugged in, a short press switches between devices, and holding the key **safely removes** the one shown, the same as *Safely Remove Hardware* in the Windows tray or the eject button in the Mac Finder.
 
 ![Elemental USB keys](docs/showcase.png)
 
@@ -23,7 +23,7 @@ Each key shows an icon for the type of device, the drive letter and volume label
 1. Download `com.elemental.usb.streamDeckPlugin` from the [latest release](../../releases/latest) and double-click it.
 2. Drag **Safely Remove USB** (category **Elemental USB**) onto a key.
 
-Requirements: Windows 10/11 and Stream Deck software **7.1** or newer. No admin rights are needed.
+Requirements: Windows 10/11 or macOS 12+, and Stream Deck software **7.1** or newer. No admin rights are needed.
 
 ## Using it
 
@@ -39,11 +39,15 @@ Settings: key language (Automatic, English, Polish) and how long to hold (0.5 / 
 
 > Programs like Notepad read a file and close it right away, so having a text file open doesn't block ejecting. That is normal Windows behavior.
 
+## macOS
+
+On a Mac the key shows external USB drives and SD cards – everything `diskutil list external physical` reports over USB or the SD slot. Instead of a drive letter it shows the volume name. Holding the key runs `diskutil eject`; when a program keeps the drive busy, the key names it (from `diskutil` or `lsof`). Security keys like a YubiKey are not drives on macOS, so they don't show up. Only tools that come with macOS are used.
+
 ## Notes
 
-- The plugin starts a small `powershell.exe` helper that lists devices and ejects them through the Windows Configuration Manager API. Locked-down PCs or aggressive antivirus software may block it.
+- On Windows the plugin starts a small `powershell.exe` helper that lists devices and ejects them through the Windows Configuration Manager API. Locked-down PCs or aggressive antivirus software may block it.
 - To name the program that blocks ejecting, the helper reads the Windows *System* event log (Kernel-PnP event 225).
-- Windows only. Nothing is sent over the network.
+- Nothing is sent over the network.
 
 ## Development
 
@@ -57,6 +61,7 @@ npx streamdeck pack com.elemental.usb.sdPlugin --output dist --force
 ```
 
 - `com.elemental.usb.sdPlugin/bin/usb-helper.ps1`: device list and eject (C# via `Add-Type`, `cfgmgr32.dll`). A device shows up when it is the nearest removable (`CM_DEVCAP_REMOVABLE`) ancestor of a device node that is not safe to surprise-remove (no `CM_DEVCAP_SURPRISEREMOVALOK`) and sits under a USB node, which is how the tray builds its list.
+- `com.elemental.usb.sdPlugin/bin/usb-helper-mac.mjs`: the same for macOS (`diskutil`, `plutil`, `lsof`), run with the Node.js that Stream Deck ships
 - `src/plugin.ts`: the action (short press / hold), helper process, language
 - `src/render.ts`: SVG key rendering and device icons
 - `com.elemental.usb.sdPlugin/ui/eject.html`: settings page (English / Polish)

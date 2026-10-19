@@ -5,7 +5,7 @@ export type KeyView =
 	| { mode: "empty"; text: string }
 	| { mode: "status"; kind: Kind; tone: "ok" | "busy" | "error"; title: string; line2?: string };
 
-const FONT = `font-family="Segoe UI, Arial, sans-serif"`;
+const FONT = `font-family="Segoe UI, -apple-system, Helvetica Neue, Arial, sans-serif"`;
 const FG = "#ffffff";
 const SUB = "#b4bfd1";
 const DIM = "#5b6478";
